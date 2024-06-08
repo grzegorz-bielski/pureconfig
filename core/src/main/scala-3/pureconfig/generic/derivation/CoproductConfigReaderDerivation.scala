@@ -7,7 +7,7 @@ import scala.deriving.Mirror
 
 import pureconfig.error.{CannotConvert, ConfigReaderFailures}
 import pureconfig.generic.derivation.ConfigReaderDerivation
-import pureconfig.generic.derivation.Utils._
+import pureconfig.generic.derivation.Utils.*
 
 trait CoproductConfigReaderDerivation(fieldMapping: ConfigFieldMapping, optionField: String) {
   self: ConfigReaderDerivation =>
