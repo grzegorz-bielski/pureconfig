@@ -2,13 +2,13 @@ package pureconfig
 package generic
 package derivation
 
-import scala.compiletime.ops.int.*
+import scala.compiletime.ops.int._
 import scala.compiletime.{constValue, constValueTuple, erasedValue, summonFrom, summonInline}
 import scala.deriving.Mirror
 import scala.util.chaining.*
 
 import pureconfig.error.{ConfigReaderFailures, ConvertFailure, KeyNotFound, UnknownKey, WrongSizeList}
-import pureconfig.generic.derivation.Utils.*
+import pureconfig.generic.derivation.Utils._
 
 trait ProductConfigReaderDerivation(fieldMapping: ConfigFieldMapping) { self: ConfigReaderDerivation =>
   inline def derivedProduct[A](using m: Mirror.ProductOf[A]): ConfigReader[A] =
