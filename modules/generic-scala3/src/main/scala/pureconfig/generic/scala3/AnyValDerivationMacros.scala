@@ -10,9 +10,12 @@ private[pureconfig] object AnyValDerivationMacros {
 
   /** Derive a `ConfigReader` for a value class. Can only be called after checking that `A` is a value class.
     */
-  inline def unsafeDeriveAnyValReader[A]: ConfigReader[A] = ${ deriveAnyValReaderImpl[A] }
+  inline def unsafeDeriveAnyValReader[A](derivationImpl: HintsAwareConfigReaderDerivation): ConfigReader[A] =
+    ${ deriveAnyValReaderImpl[A]('derivationImpl) }
 
-  def deriveAnyValReaderImpl[A: Type](using Quotes): Expr[ConfigReader[A]] = {
+  def deriveAnyValReaderImpl[A: Type](
+      derivationImplExpr: Expr[HintsAwareConfigReaderDerivation]
+  )(using Quotes): Expr[ConfigReader[A]] = {
     import quotes.reflect._
 
     val wrapperTypeRepr = TypeRepr.of[A]
@@ -30,16 +33,19 @@ private[pureconfig] object AnyValDerivationMacros {
             .asExprOf[A]
 
         '{
-          HintsAwareConfigReaderDerivation.summonConfigReader[t].map(a => ${ wrap('a) })
+          $derivationImplExpr.summonConfigReader[t].map(a => ${ wrap('a) })
         }
     }
   }
 
   /** Derive a `ConfigWriter` for a value class. Can only be called after checking that `A` is a value class.
     */
-  inline def unsafeDeriveAnyValWriter[A]: ConfigWriter[A] = ${ deriveAnyValWriterImpl[A] }
+  inline def unsafeDeriveAnyValWriter[A](derivationIml: HintsAwareConfigWriterDerivation): ConfigWriter[A] =
+    ${ deriveAnyValWriterImpl[A]('derivationIml) }
 
-  def deriveAnyValWriterImpl[A: Type](using Quotes): Expr[ConfigWriter[A]] = {
+  def deriveAnyValWriterImpl[A: Type](
+      derivationImplExpr: Expr[HintsAwareConfigWriterDerivation]
+  )(using Quotes): Expr[ConfigWriter[A]] = {
     import quotes.reflect._
 
     val wrapperTypeRepr = TypeRepr.of[A]
@@ -57,7 +63,7 @@ private[pureconfig] object AnyValDerivationMacros {
             .asExprOf[t]
 
         '{
-          HintsAwareConfigWriterDerivation.summonConfigWriter[t].contramap[A](a => ${ unwrap('a) })
+          $derivationImplExpr.summonConfigWriter[t].contramap[A](a => ${ unwrap('a) })
         }
     }
   }
