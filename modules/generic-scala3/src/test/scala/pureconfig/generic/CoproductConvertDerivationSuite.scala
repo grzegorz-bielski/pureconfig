@@ -32,8 +32,6 @@ class CoproductConvertDerivationSuite extends BaseSuite {
   checkArbitrary[AnimalConfig]
 
   it should "works with derives syntax" in {
-    import pureconfig.generic.scala3.DefaultConfigReaderDerivation._
-
     enum AnimalConfig2 derives ConfigReader {
       case DogConfig(age: Int)
       case CatConfig(age: Int)
