@@ -31,6 +31,17 @@ class CoproductConvertDerivationSuite extends BaseSuite {
 
   checkArbitrary[AnimalConfig]
 
+  it should "works with derives syntax" in {
+    enum AnimalConfig2 derives ConfigReader {
+      case DogConfig(age: Int)
+      case CatConfig(age: Int)
+      case BirdConfig(canFly: Boolean)
+    }
+
+    val conf = ConfigFactory.parseString("{ type = dog-config, age = 2 }")
+    ConfigReader[AnimalConfig2].from(conf.root()) shouldEqual Right(AnimalConfig2.DogConfig(2))
+  }
+
   it should "read disambiguation information on sealed families by default" in {
     val conf = ConfigFactory.parseString("{ type = dog-config, age = 2 }")
     ConfigReader[AnimalConfig].from(conf.root()) shouldEqual Right(DogConfig(2))
